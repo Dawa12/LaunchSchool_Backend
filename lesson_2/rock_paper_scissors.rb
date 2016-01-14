@@ -62,7 +62,7 @@ choice = ''
 loop do
   reset_scores(scores)
   prompt("Welcome to Rock Paper Scissors Lizard Spock! Time to choose your weapon!")
-  
+
   loop do
     prompt(abbr)
 
@@ -72,7 +72,7 @@ loop do
       if VALID_CHOICES.include?(choice)
         break
       elsif choice_symbols.has_key?(choice.to_sym)
-        choice = choice_symbols[:choice]
+        choice = choice_symbols[choice.to_sym]
         break
       else
         prompt("That's not a valid choice, try again")
