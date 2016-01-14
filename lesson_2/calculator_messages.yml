@@ -1,0 +1,25 @@
+# calculator_messages.yml
+
+es: 
+  welcome: "Bienvenido a la calculadora! Entre su nombre:"
+  valid_name: "Asegúrese de entrar un nombre válido."
+
+en: 
+  welcome: "Welcome to Calculator! Enter your name: "
+  valid_name: "Please make sure to enter a valid name."
+  greeting: "Thank you for entering your name"
+  first_number: "Please enter your first number"
+  second_number: "Please enter one more number"
+  invalid_number: "You did not input a valid number. Try again"
+  thank_user: "Thank you"
+  multi_line_string:
+    "What Operation would you like to perform?
+    1) Add
+    2) Subtract
+    3) Multiply
+    4) Divide"
+
+  choose_operator: "You must choose 1, 2, 3, or 4"
+  result_is: "The result is: "
+  calculate_again?: "Would you like to perform another calculation? Enter 'Yes' if you'd like to go again"
+  goodbye: "Thank you for using this program. Goodbye"
