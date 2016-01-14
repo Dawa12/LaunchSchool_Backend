@@ -1,3 +1,12 @@
+def win?(first, second)
+  first == 'rock' && (second == 'scissors' || second == 'lizard')
+end
+
+
+
+
+
+
 
 VALID_CHOICES = %w(rock paper scissors lizard spock)
 

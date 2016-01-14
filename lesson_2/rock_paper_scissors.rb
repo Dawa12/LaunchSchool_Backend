@@ -8,11 +8,11 @@ def prompt(string)
 end
 
 def win?(first, second)
-  (first == 'rock' && second == ('scissors' || 'lizard')) ||
-    (first == 'paper' && second == ('rock' || 'spock')) ||
-    (first == 'scissors' && second == ('paper' || 'lizard')) ||
-    (first == 'lizard' && second == ('paper' || 'spock')) ||
-    (first == 'spock' && second == ('scissors' || 'rock'))
+  (first == 'rock' && (second == 'scissors' || second == 'lizard')) ||
+    (first == 'paper' && (second == 'rock' || second == 'spock')) ||
+    (first == 'scissors' && (second == 'paper' || second == 'lizard')) ||
+    (first == 'lizard' && (second == 'paper' || second == 'spock')) ||
+    (first == 'spock' && (second == 'scissors' || second == 'rock'))
 end
 
 def reset_scores(scores)
