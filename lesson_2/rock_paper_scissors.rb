@@ -1,6 +1,5 @@
 VALID_CHOICES = %w(rock paper scissors lizard spock)
-choice_symbols = {r: 'rock', p: 'paper', sc: 'scissors', sp: 'spock', l: 'lizard' }
-player_choice = VALID_CHOICES
+choice_symbols = { r: 'rock', p: 'paper', sc: 'scissors', sp: 'spock', l: 'lizard' }
 
 scores = { human: 0, computer: 0 }
 
@@ -17,7 +16,8 @@ def win?(first, second)
 end
 
 def reset_scores(scores)
-  scores = { human: 0, computer: 0 }
+  scores[:human] = 0
+  scores[:computer] = 0
 end
 
 def display_round_result(player, computer)
@@ -50,7 +50,7 @@ def game_over?(scores)
 end
 
 abbr = <<-MESSAGE
-Write out the word, or use its respective aabbreviation!: 
+Write out the word, or use its respective aabbreviation!:
     r  -> rock
     p  -> paper
     sc -> scissors
@@ -71,7 +71,7 @@ loop do
 
       if VALID_CHOICES.include?(choice)
         break
-      elsif choice_symbols.has_key?(choice.to_sym)
+      elsif choice_symbols.key?(choice.to_sym)
         choice = choice_symbols[choice.to_sym]
         break
       else
@@ -87,20 +87,20 @@ loop do
 
     if game_over?(scores)
       if scores[:human] > scores[:computer]
-        Kernel.puts("You win!") #receive private method error when using 'prompt' instead of 'puts'
-      else 
+        Kernel.puts("You win!") # receive private method error when using 'prompt' instead of 'puts'
+      else
         Kernel.puts("Sorry, you lost!")
       end
-    break
+      break
     end
-    
+
     prompt("Still playing till five? Press <enter> or forfeit (f)")
     answer = Kernel.gets().chomp()
     break if answer.downcase().start_with?('f')
   end
-    prompt("Would you like to play again? (y/n)")
-    response = Kernel.gets().chomp()
-    break unless response.downcase().start_with?('y')
+  prompt("Would you like to play again? (y/n)")
+  response = Kernel.gets().chomp()
+  break unless response.downcase().start_with?('y')
 end
 
 prompt("Thank you for playing")
