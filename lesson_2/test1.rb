@@ -1,3 +1,5 @@
+# program fails to execuite. Due to line 87 case logic not adding integers. Why doesn't program store integer / float value from line 57 & 66?
+
 require 'yaml'
 
 MESSAGES = YAML.load_file('calculator_messages.yml')
@@ -49,6 +51,9 @@ loop do
   prompt('first_number')
   loop do
     number1 = Kernel.gets().chomp()
+    if number1 % 1 != 0 then number1.to_f
+      else number1.to_i
+    end
 
     break if number?(number1)
     prompt('invalid_number')
@@ -58,6 +63,9 @@ loop do
   prompt('second_number')
   loop do
     number2 = Kernel.gets().chomp()
+    if number2 % 1 != 0 then number2.to_f
+      else number2.to_i
+    end
 
     break if number?(number2)
     prompt('invalid_number')
@@ -77,10 +85,10 @@ loop do
   Kernel.puts(operating_to_message(operator) + " numbers...")
 
   result = case operator
-           when '1' then number1.to_f + number2.to_f
-           when '2' then number1.to_f - number2.to_f
-           when '3' then number1.to_f * number2.to_f
-           when '4' then number1.to_f / number2.to_f
+           when '1' then number1 + number2
+           when '2' then number1 - number2
+           when '3' then number1 * number2
+           when '4' then number1 / number2
            end
 
   operator_symbol = case operator
