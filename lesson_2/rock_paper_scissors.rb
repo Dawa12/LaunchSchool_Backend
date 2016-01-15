@@ -15,9 +15,8 @@ def win?(first, second)
     (first == 'spock' && (second == 'scissors' || second == 'rock'))
 end
 
-def reset_scores(scores)
-  scores[:human] = 0
-  scores[:computer] = 0
+def reset_scores
+  { human: 0, computer: 0 }
 end
 
 def display_round_result(player, computer)
@@ -49,7 +48,7 @@ def game_over?(scores)
   scores[:human] == 5 || scores[:computer] == 5
 end
 
-abbr = <<-MESSAGE
+player_options = <<-MESSAGE
 Write out the word, or use its respective aabbreviation!:
     r  -> rock
     p  -> paper
@@ -60,11 +59,11 @@ MESSAGE
 
 choice = ''
 loop do
-  reset_scores(scores)
+  scores = reset_scores
   prompt("Welcome to Rock Paper Scissors Lizard Spock! Time to choose your weapon!")
 
   loop do
-    prompt(abbr)
+    prompt(player_options)
 
     loop do
       choice = Kernel.gets().chomp()
