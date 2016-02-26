@@ -1,11 +1,6 @@
 require 'pry'
 
-# INITIAL_MARKER = ' '
-
-# initial_marker = {}
-# (1..9).each { |num| initial_marker[num] = "#{num}" }
-
-
+INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
@@ -21,7 +16,7 @@ end
 
 def initialize_board
   new_board = {}
-  (1..9).each { |num| new_board[num] = "#{num}" }
+  (1..9).each { |num| new_board[num] = INITIAL_MARKER }
   new_board
 end
 
@@ -44,7 +39,7 @@ def display_board(brd)
 end
 
 def empty_squares(brd)
-  brd.keys.select { |num| brd[num] == num.is_a? Integer } # returns array of all keys that are ' '
+  brd.keys.select { |num| brd[num] == INITIAL_MARKER } # returns array of all keys that are ' '
 end
 
 def joinor(arr, arg2 = ', ', arg3 = 'or')
@@ -95,39 +90,15 @@ def computer_choice!(brd)
 end
 
 
-
-  
 def find_at_risk_square(line, board)
-  if board.values_at(*line).count(PLAYER_MARKER) == 2
-    board.select { |k,v| line.include?(k) && v.is_a? Integer }.keys.first # purpose of .include?(k) don't all
+  if board.values_at(*line).count(COMPUTER_MARKER) == 2
+    board.select { |k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+  elsif board.values_at(*line).count(PLAYER_MARKER) == 2
+    board.select { |k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first # purpose of .include?(k) don't al l
   else
     nil
   end
 end
-
-
-
-# def computer_choice!(brd)
-#   if detect_threat?(brd)
-#     prompt "Threat detected!"
-#     square = empty_squares(brd).sample
-#     brd[square] = COMPUTER_MARKER
-#   else
-#     square = empty_squares(brd).sample
-#     brd[square] = COMPUTER_MARKER
-#   end
-# end
-
-
-# def detect_threat?(brd)
-#   WINNING_LINES.each do |line|
-#     if brd.values_at(*line).count(PLAYER_MARKER) == 2 && brd.values_at(*line).include?(INITIAL_MARKER)
-#       return true
-#     end
-#   end
-#   nil
-# end
-
 
 def board_full?(brd)
   empty_squares(brd) == []
