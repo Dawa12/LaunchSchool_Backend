@@ -1,14 +1,17 @@
 require 'pry'
 
-INITIAL_MARKER = ' '
+# INITIAL_MARKER = ' '
+
+# initial_marker = {}
+# (1..9).each { |num| initial_marker[num] = "#{num}" }
+
+
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
                 [[3, 5, 7], [1, 5, 9]]              # diagonals
-
-
 
 # General methods
 
@@ -18,7 +21,7 @@ end
 
 def initialize_board
   new_board = {}
-  (1..9).each { |num| new_board[num] = INITIAL_MARKER }
+  (1..9).each { |num| new_board[num] = "#{num}" }
   new_board
 end
 
@@ -41,7 +44,7 @@ def display_board(brd)
 end
 
 def empty_squares(brd)
-  brd.keys.select { |num| brd[num] == INITIAL_MARKER } # returns array of all keys that are ' '
+  brd.keys.select { |num| brd[num] == num.is_a? Integer } # returns array of all keys that are ' '
 end
 
 def joinor(arr, arg2 = ', ', arg3 = 'or')
@@ -78,55 +81,52 @@ end
 #   brd[square] = COMPUTER_MARKER
 # end
 
-
 def computer_choice!(brd)
-  if !!detect_threat?(brd)
-    prompt "Computer blocks your win!!"
-      # seems this prompt only toward end of game although it should have activated the first time there was a threat. 
-
-    square = empty_squares(brd).sample
-    brd[square] = COMPUTER_MARKER
-  else
-    square = empty_squares(brd).sample
-    brd[square] = COMPUTER_MARKER
-  end
-end
-
-
-def detect_threat?(brd)
+  square = nil
   WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 2 
-      # && brd.values_at(line[0..2]).include(INITIAL_MARKER)
-      return true
-    else
-      break
-    end
+    square = find_at_risk_square(line, brd)
+    break if square
   end
-  # ruby returns a nil / false here automatically if i don't specify return true above?
+
+  if !square 
+    square = empty_squares(brd).sample
+  end
+  brd[square] = COMPUTER_MARKER
 end
 
 
 
+  
+def find_at_risk_square(line, board)
+  if board.values_at(*line).count(PLAYER_MARKER) == 2
+    board.select { |k,v| line.include?(k) && v.is_a? Integer }.keys.first # purpose of .include?(k) don't all
+  else
+    nil
+  end
+end
 
 
-# brd.keys.select { |num| brd.values_at(line[0..2]).count(PLAYER_MARKER) == 2 && brd.values_at(line[0..2]).include(INITIAL_MARKER)}
 
-# brd.values_at(line[0..2]).replace(COMPUTER_MARKER)
-
-
-
-
-# WINNING_LINES.each do |line|
-#   def find_at_risk_square(line, board)
-#     if board.values_at(*line).count('X') == 2
-#       board.select{|k,v| line.include?(k) && v == ' '}.keys.first
-#     else
-#       nil
-#     end
+# def computer_choice!(brd)
+#   if detect_threat?(brd)
+#     prompt "Threat detected!"
+#     square = empty_squares(brd).sample
+#     brd[square] = COMPUTER_MARKER
+#   else
+#     square = empty_squares(brd).sample
+#     brd[square] = COMPUTER_MARKER
 #   end
 # end
 
 
+# def detect_threat?(brd)
+#   WINNING_LINES.each do |line|
+#     if brd.values_at(*line).count(PLAYER_MARKER) == 2 && brd.values_at(*line).include?(INITIAL_MARKER)
+#       return true
+#     end
+#   end
+#   nil
+# end
 
 
 def board_full?(brd)
@@ -218,7 +218,6 @@ answer2 = ' '
       end
 
     loop do
-      sleep(2)
       display_board(board)
 
       player_choice!(board) 
@@ -245,7 +244,6 @@ answer2 = ' '
     break if answer1.downcase.start_with?('n')
   end
 
-  p'#8 last loop'
   break if answer1.downcase.start_with?('n')
   break if answer2.downcase.start_with?('n')
 end
