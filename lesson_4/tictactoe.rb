@@ -1,4 +1,4 @@
-require 'pry'
+# Constants
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -39,22 +39,23 @@ def display_board(brd)
 end
 
 def empty_squares(brd)
-  brd.keys.select { |num| brd[num] == INITIAL_MARKER } # returns array of all keys that are ' '
+  brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
-def joinor(arr, arg2 = ', ', arg3 = 'or')
-a = ''
+def joinor(arr, arg = ', ', arg1 = 'or')
+  insert_comma = ''
+
   arr.each_with_index do |element, index|
-    arg2 = '' if arr.count == 1 # can I refactor this method better?
-    a += "#{element}#{arg2}"
+    arg = '' if arr.count == 1
+    insert_comma += "#{element}#{arg}"
     break if (index + 1) == (arr.count - 1)
   end
 
   if arr.count == 1
-    return a
+    return insert_comma
   else
-    b = ("#{arg3} " + arr.last.to_s + "\n")
-    return a + b
+    insert_or = ("#{arg1} " + arr.last.to_s + "\n")
+    return insert_comma + insert_or
   end
 end
 
@@ -62,7 +63,7 @@ def player_choice!(brd)
   prompt "Make your move! Choose a number: #{joinor(empty_squares(brd), ', ')}"
   square = ''
 
-  loop do # check to see if number is valid: is empty spot, square is 1..9
+  loop do
     square = gets.chomp.to_i
 
     break if empty_squares(brd).include?(square)
@@ -71,32 +72,39 @@ def player_choice!(brd)
   brd[square] = PLAYER_MARKER
 end
 
-# def computer_choice!(brd)
-#   square = empty_squares(brd).sample
-#   brd[square] = COMPUTER_MARKER
-# end
-
 def computer_choice!(brd)
   square = nil
+
+  # Offensive win
   WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd)
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
     break if square
   end
 
-  if !square 
+  # Defensive block
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
+      break if square
+    end
+  end
+
+  # choosing square 5
+  if !square && brd[5] == INITIAL_MARKER
+    square = 5
+  end
+
+  # Random move
+  if !square
     square = empty_squares(brd).sample
   end
   brd[square] = COMPUTER_MARKER
 end
 
-
-def find_at_risk_square(line, board)
-  if board.values_at(*line).count(COMPUTER_MARKER) == 2
-    board.select { |k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
-  elsif board.values_at(*line).count(PLAYER_MARKER) == 2
-    board.select { |k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first # purpose of .include?(k) don't al l
-  else
-    nil
+def find_at_risk_square(line, board, marker)
+  if board.values_at(*line).count(marker) == 2
+    board.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
+  else # else without condition evaluates to nil
   end
 end
 
@@ -105,12 +113,12 @@ def board_full?(brd)
 end
 
 def someone_won?(brd)
-  !!detect_winner?(brd) # bang, bang in front of method forces a boolean as a return value: 'player' => true, 'nil' => false
+  !!detect_winner?(brd)
 end
 
 def detect_winner?(brd)
   WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 3 # '*', splat operator, is shortcut to let us pass line[0], line[1], line[2], or all the arguments within the line array
+    if brd.values_at(*line).count(PLAYER_MARKER) == 3
       return 'Player'
     elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
       return 'Computer'
@@ -136,69 +144,77 @@ def increment_score(brd, hsh)
 end
 
 def display_scores(hsh)
-  prompt "The score is: Computer: #{hsh['Computer']}
-                Player: #{hsh['Player']}"
+  prompt <<-scores1
+The score is: Computer: #{hsh['Computer']}
+                   Player: #{hsh['Player']}
+  scores1
 end
 
-
 def score_5_action(scores, board, answer2)
-user_answer = ''  
+  user_answer = ''
 
   if score_5?(scores)
-  prompt "Game Over, #{detect_winner?(board)} wins with 5 points!"
-  prompt "Final score: " 
-  display_scores(scores)
-  
-  prompt "Play another game till 5? ('yes' or 'no')"
+    prompt "Game Over, #{detect_winner?(board)} wins with 5 points!"
+    prompt "Final score: "
+    display_scores(scores)
+
+    prompt "Play another game till 5? ('yes' or 'no')"
     loop do
       user_answer = gets.chomp
       prompt "Thank you for your answer"
+
       if user_answer.downcase.start_with?('yes') || user_answer.downcase.start_with?('no')
         break
       else
         prompt "enter a valid answer"
       end
     end
-    answer2.gsub!(/\s/, user_answer) # destructive substitution of the space charcter with string value of user_answer
-    # any way to replace a blank variable, without a space character?
+    answer2.gsub!(/\s/, user_answer) # destructive substitution of the space character with string value of user_answer
     return answer2
   end
-    # chose to omit 'else' condition
 end
 
+def alternate_player(current_player)
+  return 'computer' if current_player == 'player'
+  return 'player' if current_player == 'computer'
+end
 
+def place_piece!(brd, current_player)
+  if current_player == 'computer'
+    computer_choice!(brd)
+  else
+    player_choice!(brd)
+  end
+end
 
 # <-----The Program------>
-
 loop do # main loop
-prompt "Welcome to a New Game of Tic-Tac-Toe"
-scores = {}
-initialize_scores(scores)
+  prompt "Welcome to a New Game of Tic-Tac-Toe"
+  scores = {}
+  initialize_scores(scores)
 
-board = ''
-answer1 = ''
-answer2 = ' '
+  board = ''
+  answer1 = ''
+  answer2 = ' '
 
   loop do
-    board = initialize_board 
-    display_scores(scores) 
+    current_player = 'player'
+    board = initialize_board
+    display_scores(scores)
 
     prompt "Ready to begin? Hit enter"
-      loop do 
-        break if gets.chomp
-      end
+    loop do
+      break if gets.chomp
+    end
 
     loop do
       display_board(board)
-
-      player_choice!(board) 
-      break if someone_won?(board) || board_full?(board)
-
-      computer_choice!(board)
+      place_piece!(board, current_player)
+      current_player = alternate_player(current_player)
       break if someone_won?(board) || board_full?(board)
     end
 
-    display_board(board) 
+    display_board(board)
 
     if someone_won?(board)
       prompt "#{detect_winner?(board)} won!"
@@ -207,8 +223,8 @@ answer2 = ' '
       prompt "It's a tie!"
     end
 
-    break if score_5_action(scores, board, answer2) 
-    
+    break if score_5_action(scores, board, answer2)
+
     prompt "Play again? Yes or no?"
     answer1 = gets.chomp
 
@@ -219,21 +235,3 @@ answer2 = ' '
   break if answer2.downcase.start_with?('n')
 end
 prompt("Thanks for playing tic-tac-toe!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
