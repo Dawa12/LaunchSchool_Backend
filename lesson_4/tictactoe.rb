@@ -42,21 +42,19 @@ def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
-def joinor(arr, arg = ', ', arg1 = 'or')
-  insert_comma = ''
+def joinor(array, comma = ', ')
+  user_options = ''
 
-  arr.each_with_index do |element, index|
-    arg = '' if arr.count == 1
-    insert_comma += "#{element}#{arg}"
-    break if (index + 1) == (arr.count - 1)
-  end
-
-  if arr.count == 1
-    return insert_comma
+  if array.count == 1
+    user_options = array[0]
   else
-    insert_or = ("#{arg1} " + arr.last.to_s + "\n")
-    return insert_comma + insert_or
+    array.each do |num|
+      break if num == array.last
+      user_options << "#{num}#{comma}"
+    end
+    user_options << "or #{array.last}"
   end
+  user_options
 end
 
 def player_choice!(brd)
@@ -104,7 +102,8 @@ end
 def find_at_risk_square(line, board, marker)
   if board.values_at(*line).count(marker) == 2
     board.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
-  else # else without condition evaluates to nil
+  else
+    nil # can also just remove else condition entirely since methods by default evaluaate to nil
   end
 end
 
@@ -135,7 +134,7 @@ def initialize_scores(hsh)
 end
 
 def score_5?(hsh)
-  hsh['Computer'] == 5 || hsh['Player'] == 2
+  hsh['Computer'] == 5 || hsh['Player'] == 5
 end
 
 def increment_score(brd, hsh)
@@ -144,15 +143,17 @@ def increment_score(brd, hsh)
 end
 
 def display_scores(hsh)
-  prompt <<-scores1
-The score is: Computer: #{hsh['Computer']}
-                   Player: #{hsh['Player']}
-  scores1
+puts
+
+score_is = "The score is:"
+prompt score_is unless score_5?(hsh) # remove this prompt since it will already say "Final Score:" if 5 points is reached
+prompt "Computer: #{hsh['Computer']}".rjust(score_is.size)
+prompt "Player: #{hsh['Player']}".rjust(score_is.size)
+puts
+
 end
 
-def score_5_action(scores, board, answer2)
-  user_answer = ''
-
+def score_5_action(scores, board, new_match)
   if score_5?(scores)
     prompt "Game Over, #{detect_winner?(board)} wins with 5 points!"
     prompt "Final score: "
@@ -160,18 +161,18 @@ def score_5_action(scores, board, answer2)
 
     prompt "Play another game till 5? ('yes' or 'no')"
     loop do
-      user_answer = gets.chomp
-      prompt "Thank you for your answer"
+      new_match.replace(gets.chomp)
 
-      if user_answer.downcase.start_with?('yes') || user_answer.downcase.start_with?('no')
+      if new_match.downcase == 'yes' || new_match.downcase == 'no'
+        prompt "Thank you for your answer"
         break
       else
-        prompt "enter a valid answer"
+        prompt "Please enter a valid answer"
       end
     end
-    answer2.gsub!(/\s/, user_answer) # destructive substitution of the space character with string value of user_answer
-    return answer2
   end
+
+  return score_5?(scores)
 end
 
 def alternate_player(current_player)
@@ -194,8 +195,8 @@ loop do # main loop
   initialize_scores(scores)
 
   board = ''
-  answer1 = ''
-  answer2 = ' '
+  another_round = ''
+  new_match = ''
 
   loop do
     current_player = 'player'
@@ -203,9 +204,7 @@ loop do # main loop
     display_scores(scores)
 
     prompt "Ready to begin? Hit enter"
-    loop do
-      break if gets.chomp
-    end
+    gets.chomp
 
     loop do
       display_board(board)
@@ -223,15 +222,16 @@ loop do # main loop
       prompt "It's a tie!"
     end
 
-    break if score_5_action(scores, board, answer2)
+    break if score_5_action(scores, board, new_match)
 
     prompt "Play again? Yes or no?"
-    answer1 = gets.chomp
+    another_round = gets.chomp
 
-    break if answer1.downcase.start_with?('n')
+    break if another_round.downcase.start_with?('n')
   end
 
-  break if answer1.downcase.start_with?('n')
-  break if answer2.downcase.start_with?('n')
+  break if another_round.downcase.start_with?('n')
+  puts "outer new_match: #{new_match.downcase}"
+  break if new_match.downcase.start_with?('n')
 end
 prompt("Thanks for playing tic-tac-toe!")
