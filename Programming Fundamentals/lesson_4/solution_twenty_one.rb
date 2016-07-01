@@ -1,4 +1,3 @@
-
 SUITS = ['H', 'D', 'S', 'C'] # array of all suits
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] # array of values
 
@@ -31,6 +30,7 @@ def total(cards)
   end
 
   sum
+  prompt sum
 end
 
 def busted?(cards)
@@ -156,3 +156,6 @@ loop do
 end
 
 prompt "Thank you for playing Twent-One! Good bye!"
+
+
+=end

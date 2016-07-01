@@ -1,0 +1,85 @@
+/*
+- Why height must be in px and cannot be in %, similar to width?
+
+
+*/
+
+
+#left {
+  height: 700px;
+  width: 20%;
+  background-color: violet;
+  /*float: left;*/
+}
+
+#right {
+  position: relative;
+  height: 700px;
+  width: 78%;
+  background-color: blue;
+  left: 21%;
+  top: -700px;
+}
+
+#header {
+  position: fixed;
+  width: 100%;
+  height: 100px;
+  z-index: 10;
+  background-color: gray;
+}
+
+#footer {
+  /*clear: both;*/
+  width: 100%;
+  height: 100px;
+  background-color: orange;
+  position: absolute;
+  bottom: 0px;
+  z-index: 3;
+}
+
+body {
+  margin-bottom: 0px;
+}
+
+/*
+div {
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  border: 2px solid red;
+}
+
+#header {
+  background-color: green;
+  position: relative;
+  top: 55px;
+  z-index: 1;
+}
+
+#footer {
+  background-color: yellow;
+}
+
+#left {
+  background-color: violet;
+  position: relative;
+  /*left: 100px;*/
+  /*z-index: 2;*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
