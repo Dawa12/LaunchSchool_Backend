@@ -1,0 +1,13 @@
+<ul>
+  <% @lists.each_with_index do |list, index| %>
+    <a href="/lists/<%=index%>">
+      <li>
+        <%= list[:name] %> 
+      </li>
+    </a>
+  <% end %>
+</ul>
+
+<% content_for :header_links do %>
+  <a href="/lists/new">New List</a>
+<% end %>   
