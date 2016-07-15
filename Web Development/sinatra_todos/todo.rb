@@ -103,6 +103,8 @@ post "/lists/:list_id/todos" do
   list[:todos] << {name: params[:todo], completed: false}
   session[:success] = "The todo was added"
   redirect "/lists/#{list_id}"
+
+# comments
 end
 
 
